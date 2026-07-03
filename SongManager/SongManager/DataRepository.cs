@@ -112,5 +112,9 @@
         {
             return Songs.Where(s => s.Instrument.Contains(instrument, StringComparison.OrdinalIgnoreCase)).ToList();
         }
+        public Artist GetArtistByID(int artistId)
+        {
+            return Artists.FirstOrDefault(a => a.Id == artistId);
+        }
     }
 }
