@@ -52,21 +52,58 @@
 
             Songs.Add(newSong);
         }
-        public bool UpdateSong(int songId, string newTitle, string newNotes, string newSheet, Difficulty newDifficulty)
+        public bool UpdateSong(int songId, string newTitle, string newArtistName, string newGenreName, string newNotes, string newSheet, Difficulty newDifficulty)
         {
-            Song songToUpdate = Songs.FirstOrDefault(s => s.Id == songId);
+            var songToUpdate = Songs.FirstOrDefault(s => s.Id == songId);
             if (songToUpdate == null)
             {
-                return false;
+              return false;
             }
-            else
+
+            if(!string.IsNullOrWhiteSpace(newTitle))
             {
                 songToUpdate.Title = newTitle;
-                songToUpdate.Notes = newNotes;
-                songToUpdate.Sheet = newSheet;
-                songToUpdate.Difficulty = newDifficulty;
-                return true;
             }
+            if(!string.IsNullOrWhiteSpace(newArtistName))
+            {
+                var existingArtist = Artists.FirstOrDefault(a => a.Name.Equals(newArtistName, StringComparison.OrdinalIgnoreCase));
+                if (existingArtist == null)
+                {
+                    int newArtistId = Artists.Count > 0 ? Artists.Max(a => a.Id) + 1 : 1;
+                    Artist newArtist = new Artist { Id = newArtistId, Name = newArtistName };
+                    Artists.Add(newArtist);
+                    songToUpdate.ArtistId = newArtistId;
+                }
+                else
+                {
+                    songToUpdate.ArtistId = existingArtist.Id;
+                }
+            }
+            if(!string.IsNullOrWhiteSpace(newGenreName))
+            {
+                var existingGenre = Genres.FirstOrDefault(g => g.Name.Equals(newGenreName, StringComparison.OrdinalIgnoreCase));
+                if (existingGenre == null)
+                {
+                    int newGenreId = Genres.Count > 0 ? Genres.Max(g => g.Id) + 1 : 1;
+                    Genre newGenre = new Genre { Id = newGenreId, Name = newGenreName };
+                    Genres.Add(newGenre);
+                    songToUpdate.GenreId = newGenreId;
+                }
+                else
+                {
+                    songToUpdate.GenreId = existingGenre.Id;
+                }
+            }
+            if(!string.IsNullOrWhiteSpace(newNotes))
+            {
+                songToUpdate.Notes = newNotes;
+            }
+            if(!string.IsNullOrWhiteSpace(newSheet))
+            {
+                songToUpdate.Sheet = newSheet;
+            }
+            songToUpdate.Difficulty = newDifficulty;
+            return true;
         }
         public bool DeleteSong(int songId)
         {

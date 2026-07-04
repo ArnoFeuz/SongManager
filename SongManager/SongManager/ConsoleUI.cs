@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -40,7 +41,7 @@ namespace SongManager
                         SearchOptions();
                         break;
                     case "3":
-                        //UpdateSong();
+                        UpdateSong();
                         break;
                     case "4":
                         return;
@@ -99,6 +100,61 @@ namespace SongManager
             Console.ReadKey();
         }
 
+        private void UpdateSong()
+        {
+            Console.Clear();
+            Console.WriteLine("========================================");
+            Console.WriteLine("              Song Manager              ");
+            Console.WriteLine("              Update Song               ");
+            Console.WriteLine("========================================");
+            Console.WriteLine("Enter the Id of the song you want to update: ");
+            string input = Console.ReadLine();
+            if (!int.TryParse(input, out int songId))
+            {
+                Console.WriteLine("Invalid Id. Please enter a number.");
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Enter Song Title:");
+                string newTitle = Console.ReadLine();
+                Console.Write("Enter artist name: ");
+                string newArtistName = Console.ReadLine();
+                Console.Write("Enter genre name: ");
+                string newGenreName = Console.ReadLine();
+                Console.Write("Enter instrument: ");
+                string newInstrument = Console.ReadLine();
+                Console.Write("Enter notes (optional): ");
+                string newNotes = Console.ReadLine();
+                Console.Write("Enter sheet music (optional): ");
+                string newSheet = Console.ReadLine();
+                Console.Write("Enter difficulty (1. Easy, 2. Medium, 3. Hard): ");
+                string difficultyInput = Console.ReadLine();
+                Difficulty newDifficulty;
+                switch (difficultyInput)
+                {
+                    case "1":
+                        newDifficulty = Difficulty.Easy;
+                        break;
+                    case "2":
+                        newDifficulty = Difficulty.Medium;
+                        break;
+                    case "3":
+                        newDifficulty = Difficulty.Hard;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid difficulty. Defaulting to Easy.");
+                        newDifficulty = Difficulty.Easy;
+                        break;
+                }
+                _dataRepository.UpdateSong(songId, newTitle, newArtistName, newGenreName, newNotes, newSheet, newDifficulty);
+                Console.WriteLine("Song updated successfully!");
+                Console.WriteLine("Press any key to return to the main menu...");
+                Console.ReadKey();
+            }
+
+        }
+
         private void SearchOptions()
         {
             Console.Clear();
@@ -120,12 +176,12 @@ namespace SongManager
                 case "2":
                     SearchById();
                     break;
-                    //case "3":
-                    //SearchByArtist();
+                case "3":
+                    SearchByArtist();
                     break;
 
-                    //case "4":
-                    //SearchByGenre();
+                case "4":
+                    SearchByGenre();
                     break;
                 case "5":
                     return;
@@ -219,6 +275,89 @@ namespace SongManager
                     Console.WriteLine("\nPress any key to return to the search menu...");
                     Console.ReadKey();
                 }
+            }
+        }
+        private void SearchByArtist()
+        {
+            Console.Clear();
+            Console.WriteLine("========================================");
+            Console.WriteLine("              Song Manager              ");
+            Console.WriteLine("             Search by Artist           ");
+            Console.WriteLine("========================================");
+            Console.Write("Enter artist name to search: ");
+            string searchArtist = Console.ReadLine();
+            var results = _dataRepository.SearchSongsByArtist(searchArtist);
+            Console.Clear();
+            Console.WriteLine("========================================");
+            Console.WriteLine("              Song Manager              ");
+            Console.WriteLine("                Results                 ");
+            Console.WriteLine("========================================");
+            if (results.Count == 0)
+            {
+                Console.WriteLine("No songs found with the given artist.");
+                Console.WriteLine("Press any key to return to the search menu...");
+                Console.ReadKey();
+                return;
+            }
+            else
+            {
+                foreach (var song in results)
+                {
+                    int artistId = song.ArtistId;
+                    int genreId = song.GenreId;
+                    var artist = _dataRepository.GetArtistByID(artistId);
+                    var genre = _dataRepository.GetGenreByID(genreId);
+                    Console.WriteLine($"Title: {song.Title}");
+                    Console.WriteLine($"Artist: {artist?.Name}");
+                    Console.WriteLine($"Genre: {genre?.Name}");
+                    Console.WriteLine($"Instrument: {song.Instrument}");
+                    Console.WriteLine($"Difficulty: {song.Difficulty}");
+                    Console.WriteLine("----------------------------------------");
+                }
+                Console.WriteLine("\nPress any key to return to the search menu...");
+                Console.ReadKey();
+            }
+        }
+        private void SearchByGenre()
+        {
+            Console.Clear();
+            Console.WriteLine("========================================");
+            Console.WriteLine("              Song Manager              ");
+            Console.WriteLine("             Search by Genre            ");
+            Console.WriteLine("========================================");
+            Console.Write("Enter genre name to search: ");
+            string searchGenre = Console.ReadLine();
+            var results = _dataRepository.SearchSongsByGenre(searchGenre);
+            Console.Clear();
+            Console.WriteLine("========================================");
+            Console.WriteLine("              Song Manager              ");
+            Console.WriteLine("                Results                 ");
+            Console.WriteLine("========================================");
+            if (results.Count == 0)
+            {
+                Console.WriteLine("No songs found with the given genre.");
+                Console.WriteLine("Press any key to return to the search menu...");
+                Console.ReadKey();
+                return;
+            }
+            else
+            {
+                foreach (var song in results)
+                {
+                    int artistId = song.ArtistId;
+                    int genreId = song.GenreId;
+                    var artist = _dataRepository.GetArtistByID(artistId);
+                    var genre = _dataRepository.GetGenreByID(genreId);
+                    Console.WriteLine($"Title: {song.Title}");
+                    Console.WriteLine($"Artist: {artist?.Name}");
+                    Console.WriteLine($"Genre: {genre?.Name}");
+                    Console.WriteLine($"Instrument: {song.Instrument}");
+                    Console.WriteLine($"Difficulty: {song.Difficulty}");
+                    Console.WriteLine("----------------------------------------");
+
+                }
+                Console.WriteLine("\nPress any key to return to the search menu...");
+                Console.ReadKey();
             }
         }
     }
