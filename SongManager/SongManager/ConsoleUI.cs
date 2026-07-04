@@ -117,8 +117,8 @@ namespace SongManager
                 case "1":
                     SearchByTitle();
                     break;
-                    //case "2":
-                    //SearchById();
+                case "2":
+                    SearchById();
                     break;
                     //case "3":
                     //SearchByArtist();
@@ -142,7 +142,7 @@ namespace SongManager
             Console.WriteLine("             Search by Title            ");
             Console.WriteLine("========================================");
             Console.Write("Enter song title to search: ");
-            string searchTitle = (Console.ReadLine());
+            string searchTitle = Console.ReadLine();
             var results = _dataRepository.SearchSongsByTitle(searchTitle);
             Console.Clear();
             Console.WriteLine("========================================");
@@ -163,10 +163,10 @@ namespace SongManager
                     int artistId = song.ArtistId;
                     int genreId = song.GenreId;
                     var artist = _dataRepository.GetArtistByID(artistId);
-                    //var genre = _dataRepository.GetGenreById(genreId);
+                    var genre = _dataRepository.GetGenreByID(genreId);
                     Console.WriteLine($"Title: {song.Title}");
                     Console.WriteLine($"Artist: {artist?.Name}");
-                    //Console.WriteLine($"Genre: {genre?.Name}");
+                    Console.WriteLine($"Genre: {genre?.Name}");
                     Console.WriteLine($"Instrument: {song.Instrument}");
                     Console.WriteLine($"Difficulty: {song.Difficulty}");
                     Console.WriteLine("\nPress any key to return to the search menu...");
@@ -175,6 +175,51 @@ namespace SongManager
                 }
             }
 
+        }
+        private void SearchById()
+        {
+            Console.Clear();
+            Console.WriteLine("========================================");
+            Console.WriteLine("              Song Manager              ");
+            Console.WriteLine("               Search by Id             ");
+            Console.WriteLine("========================================");
+            Console.Write("Enter song Id to search: ");
+            string searchId = Console.ReadLine();
+            if (!int.TryParse(searchId, out int songId))
+            {
+                Console.WriteLine("Invalid Id. Please enter a number.");
+                return;
+            }
+            else
+            {
+                var song = _dataRepository.SearchSongsById(songId);
+                Console.Clear();
+                Console.WriteLine("========================================");
+                Console.WriteLine("              Song Manager              ");
+                Console.WriteLine("                Results                 ");
+                Console.WriteLine("========================================");
+                if (song == null)
+                {
+                    Console.WriteLine("No song found with the given Id.");
+                    Console.WriteLine("Press any key to return to the search menu...");
+                    Console.ReadKey();
+                    return;
+                }
+                else
+                {
+                    int artistId = song.ArtistId;
+                    int genreId = song.GenreId;
+                    var artist = _dataRepository.GetArtistByID(artistId);
+                    var genre = _dataRepository.GetGenreByID(genreId);
+                    Console.WriteLine($"Title: {song.Title}");
+                    Console.WriteLine($"Artist: {artist?.Name}");
+                    Console.WriteLine($"Genre: {genre?.Name}");
+                    Console.WriteLine($"Instrument: {song.Instrument}");
+                    Console.WriteLine($"Difficulty: {song.Difficulty}");
+                    Console.WriteLine("\nPress any key to return to the search menu...");
+                    Console.ReadKey();
+                }
+            }
         }
     }
 }

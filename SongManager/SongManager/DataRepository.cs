@@ -116,5 +116,9 @@
         {
             return Artists.FirstOrDefault(a => a.Id == artistId);
         }
+        public Genre GetGenreByID(int artistId)
+        {
+            return Genres.FirstOrDefault(g => g.Id == artistId);
+        }
     }
 }
