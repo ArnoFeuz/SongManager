@@ -5,6 +5,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.IO;
+
 
 namespace SongManager
 {
@@ -31,7 +34,8 @@ namespace SongManager
                 Console.WriteLine("3. Update Song");
                 Console.WriteLine("4. Delete Song");
                 Console.WriteLine("5. List All Songs");
-                Console.WriteLine("6. Exit");
+                Console.WriteLine("6. Save");
+                Console.WriteLine("7. Exit");
                 Console.WriteLine("========================================");
                 RandomSongs();
                 Console.ForegroundColor = ConsoleColor.DarkGray ;
@@ -54,6 +58,14 @@ namespace SongManager
                         ListAllSongs();
                         break;
                     case "6":
+                        Console.WriteLine("Saving data to JSON file...");
+                        JsonStorage.SaveDataToJsonFile(_dataRepository, "songs.json");
+                        Console.WriteLine("Data saved successfully.");  
+                        break;
+                    case "7":
+                        Console.WriteLine("Saving data to JSON file...");
+                        JsonStorage.SaveDataToJsonFile(_dataRepository, "songs.json");
+                        Console.WriteLine("Data saved successfully. Exiting the application.");
                         Environment.Exit(0);
                         break;
                     default:

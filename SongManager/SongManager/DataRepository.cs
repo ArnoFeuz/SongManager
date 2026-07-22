@@ -2,9 +2,13 @@
 {
     public class DataRepository
     {
-        public List<Song> Songs { get; } = new List<Song>();
-        public List<Artist> Artists { get; } = new List<Artist>();
-        public List<Genre> Genres { get; } = new List<Genre>();
+        public List<Song> Songs { get; set; } = new List<Song>();
+        public List<Artist> Artists { get; set;  } = new List<Artist>();
+        public List<Genre> Genres { get; set; } = new List<Genre>();
+
+        public DataRepository()
+        {
+        }
 
         public void AddSongWithArtistAndGenre(string songTitle, string artistName, string genreName, string instrument, string notes, string sheet, Difficulty difficulty)
         {
@@ -49,7 +53,7 @@
                 Sheet = sheet,
                 Difficulty = difficulty
             };
-
+            
             Songs.Add(newSong);
         }
         public bool UpdateSong(int songId, string newTitle, string newArtistName, string newGenreName, string newNotes, string newSheet, Difficulty newDifficulty)

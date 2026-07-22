@@ -7,7 +7,7 @@ namespace SongManager
     {
         static void Main(string[] args)
         {
-            DataRepository repository = new DataRepository();
+            DataRepository repository = JsonStorage.LoadDataFromJsonFile("songs.json");
             ConsoleUI ui = new ConsoleUI(repository);
             ui.RunMenu();
         }
